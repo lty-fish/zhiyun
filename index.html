@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>知韵 —— 申城非遗志</title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&display=swap');
+
+        body {
+            font-family: 'Noto Serif SC', 'Inter', serif;
+            background-color: #fdfaf6;
+        }
+
+        .museum-tab-active {
+            background-color: #b5453a;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .district-card {
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            cursor: pointer;
+        }
+        .district-card:hover {
+            border-left-color: #b5453a;
+            background-color: #fef9f5;
+            transform: translateX(4px);
+        }
+        .district-card-active {
+            border-left-color: #b5453a;
+            background-color: #fef5ee;
+            font-weight: 700;
+        }
+
+        .process-btn {
+            transition: all 0.25s ease;
+        }
+        .process-btn-active {
+            background-color: white;
+            color: #b5453a;
+            border-left: 4px solid #b5453a;
+            font-weight: 700;
+        }
+
+        .section-img {
+            border-radius: 1.25rem;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            display: block;
+        }
+
+        .img-wrapper {
+            position: relative;
+        }
+
+        .img-error-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            pointer-events: none;
+            display: none;
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <nav class="fixed top-0 w-full bg-white/95 backdrop-blur-sm z-50 border-b border-stone-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <span class="text-2xl font-black text-[#b5453a] tracking-tighter">知韵 · 申城非遗志</span>
+            <div class="hidden md:flex space-x-8 text-[11px] font-bold tracking-[0.2em] uppercase">
+                <a href="#home" class="hover:text-amber-700 transition">首页</a>
+                <a href="#museum" class="hover:text-amber-700 transition">非遗大观</a>
+                <a href="#map" class="hover:text-amber-700 transition">区域分布</a>
+                <a href="#process" class="hover:text-amber-700 transition">技艺赏析</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 py-20 space-y-14">
+
+        <!-- ========== 首页横幅（含图片） ========== -->
+        <section id="home">
+            <div class="bg-gradient-to-r from-[#b5453a] to-stone-800 rounded-2xl overflow-hidden shadow-2xl">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-0 items-center">
+                    <div class="p-10 md:p-14 text-center md:text-left">
+                        <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">海上风华 · 非遗新生</h1>
+                        <p class="text-lg text-stone-200 mb-8 max-w-md mx-auto md:mx-0 leading-relaxed">
+                            在黄浦江的潮汐里，听吴歌悠扬；<br>在石库门的弄堂间，寻匠心跳动。
+                        </p>
+                        <div class="flex flex-wrap gap-3 justify-center md:justify-start">
+                            <a href="#museum"
+                            class="bg-white text-stone-800 px-6 py-3 rounded-full font-bold text-sm hover:bg-stone-100 transition">探索非遗</a>
+                            <a href="#map"
+                            class="border-2 border-white text-white px-6 py-3 rounded-full font-bold text-sm hover:bg-white hover:text-stone-800 transition">区域分布</a>
+                        </div>
+                    </div>
+                    <div class="h-64 md:h-full min-h-[320px] img-wrapper">
+                        <img src="上海绒绣.png"
+                        alt="上海非遗海派文化"
+                        class="w-full h-full object-cover"
+                        onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+                        <span class="img-error-text">图片加载失败：上海绒绣.png</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== 非遗大观（含图片） ========== -->
+        <section id="museum">
+            <div class="bg-white rounded-2xl shadow-lg p-6 md:p-10">
+                <h2 class="text-3xl font-bold text-stone-800 mb-6">非遗大观</h2>
+                <div class="flex bg-stone-50 p-1.5 rounded-full shadow-inner border border-stone-200 overflow-x-auto flex-wrap gap-1 mb-8">
+                    <button onclick="switchEra('folk-lit')" id="era-folk-lit"
+                    class="era-btn museum-tab-active px-4 py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap">民间文学</button>
+                    <button onclick="switchEra('trad-music')" id="era-trad-music"
+                    class="era-btn px-4 py-2 rounded-full text-xs font-bold text-stone-400 transition-all whitespace-nowrap">传统音乐</button>
+                    <button onclick="switchEra('trad-dance')" id="era-trad-dance"
+                    class="era-btn px-4 py-2 rounded-full text-xs font-bold text-stone-400 transition-all whitespace-nowrap">传统舞蹈</button>
+                    <button onclick="switchEra('sports')" id="era-sports"
+                    class="era-btn px-4 py-2 rounded-full text-xs font-bold text-stone-400 transition-all whitespace-nowrap">体育游艺杂技</button>
+                    <button onclick="switchEra('trad-art')" id="era-trad-art"
+                    class="era-btn px-4 py-2 rounded-full text-xs font-bold text-stone-400 transition-all whitespace-nowrap">传统美术</button>
+                    <button onclick="switchEra('trad-craft')" id="era-trad-craft"
+                    class="era-btn px-4 py-2 rounded-full text-xs font-bold text-stone-400 transition-all whitespace-nowrap">传统技艺</button>
+                    <button onclick="switchEra('trad-med')" id="era-trad-med"
+                    class="era-btn px-4 py-2 rounded-full text-xs font-bold text-stone-400 transition-all whitespace-nowrap">传统医药</button>
+                    <button onclick="switchEra('folklore')" id="era-folklore"
+                    class="era-btn px-4 py-2 rounded-full text-xs font-bold text-stone-400 transition-all whitespace-nowrap">民俗</button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start fade-switch" id="museum-content">
+                    <div>
+                        <h3 class="text-2xl font-bold text-stone-800 mb-4" id="era-title">民间文学</h3>
+                        <p class="text-stone-600 mb-5 leading-relaxed text-sm" id="era-desc">
+                            民间文学是各民族在长期历史发展中创造并传承的口头文学作品，包括神话、传说、故事、歌谣、谚语等。
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-5" id="era-tags"></div>
+                        <h4 class="font-bold text-stone-700 mb-2 text-sm">代表项目</h4>
+                        <ul class="space-y-1.5 text-stone-600 text-sm" id="era-items"></ul>
+                    </div>
+                    <div class="rounded-2xl overflow-hidden shadow-md img-wrapper">
+                        <img id="era-image"
+                        src="沪谚.png"
+                        alt="民间文学"
+                        class="section-img aspect-[4/5]"
+                        onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22750%22%3E%3Crect fill=%22%23f0e6d8%22 width=%22600%22 height=%22750%22/%3E%3Ctext fill=%22%23b5453a%22 x=%22300%22 y=%22375%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22 font-size=%2224%22 font-family=%22sans-serif%22%3E图片未找到%3C/text%3E%3C/svg%3E';">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== 区域分布（含图片） ========== -->
+        <section id="map">
+            <div class="bg-white rounded-2xl shadow-lg p-6 md:p-10">
+                <h2 class="text-3xl font-bold text-stone-800 mb-6">区域分布</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="md:col-span-1 space-y-2">
+                        <div class="district-card district-card-active p-3 bg-stone-50 rounded-xl border"
+                        onclick="loadDistrict('青浦区')" id="dist-青浦区">
+                        <span class="text-xs font-bold text-[#b5453a]">青浦区</span>
+                        <p class="text-[10px] text-stone-500 mt-1">吴歌·田山歌</p>
+                    </div>
+                    <div class="district-card p-3 bg-stone-50 rounded-xl border"
+                    onclick="loadDistrict('崇明区')" id="dist-崇明区">
+                    <span class="text-xs font-bold text-[#b5453a]">崇明区</span>
+                    <p class="text-[10px] text-stone-500 mt-1">崇明山歌·瀛洲琵琶</p>
+                </div>
+                <div class="district-card p-3 bg-stone-50 rounded-xl border"
+                onclick="loadDistrict('金山区')" id="dist-金山区">
+                <span class="text-xs font-bold text-[#b5453a]">金山区</span>
+                <p class="text-[10px] text-stone-500 mt-1">沪谚·农民画·打莲湘</p>
+            </div>
+            <div class="district-card p-3 bg-stone-50 rounded-xl border"
+            onclick="loadDistrict('松江区')" id="dist-松江区">
+            <span class="text-xs font-bold text-[#b5453a]">松江区</span>
+            <p class="text-[10px] text-stone-500 mt-1">顾绣·舞草龙</p>
+        </div>
+        <div class="district-card p-3 bg-stone-50 rounded-xl border"
+        onclick="loadDistrict('浦东新区')" id="dist-浦东新区">
+        <span class="text-xs font-bold text-[#b5453a]">浦东新区</span>
+        <p class="text-[10px] text-stone-500 mt-1">绒绣·码头号子</p>
+    </div>
+    <div class="district-card p-3 bg-stone-50 rounded-xl border"
+    onclick="loadDistrict('黄浦区')" id="dist-黄浦区">
+    <span class="text-xs font-bold text-[#b5453a]">黄浦区</span>
+    <p class="text-[10px] text-stone-500 mt-1">海派魔术·豫园灯会</p>
+</div>
+</div>
+
+<div class="md:col-span-1 img-wrapper">
+    <img id="district-image"
+    src="江南丝竹.png"
+    alt="上海非遗地图"
+    class="section-img aspect-[5/4]"
+    onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+
+</div>
+
+<div class="md:col-span-1">
+    <div class="bg-stone-50 rounded-xl p-6 h-full">
+        <h3 class="text-xl font-bold text-stone-800 mb-4" id="district-title">青浦区</h3>
+        <p class="text-stone-600 text-sm leading-relaxed" id="district-desc"></p>
+        <div class="mt-4 pt-4 border-t border-stone-200">
+            <p class="text-[10px] text-stone-400 uppercase font-bold">非遗项目</p>
+            <ul class="text-xs text-stone-500 mt-2 space-y-1" id="district-list"></ul>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- ========== 技艺赏析（含图片） ========== -->
+<section id="process">
+    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-10">
+        <h2 class="text-3xl font-bold text-stone-800 mb-6">技艺赏析</h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="md:col-span-1">
+                <div class="bg-stone-50 rounded-xl p-4">
+                    <h3 class="text-lg font-bold text-stone-800 mb-4">工艺流程</h3>
+                    <div class="space-y-2">
+                        <button onclick="showProcess(1)" id="proc-1"
+                        class="process-btn process-btn-active w-full text-left px-4 py-2.5 rounded-lg text-sm transition">顾绣劈丝</button>
+                        <button onclick="showProcess(2)" id="proc-2"
+                        class="process-btn w-full text-left px-4 py-2.5 rounded-lg text-sm text-stone-500 hover:bg-stone-100 transition">绒绣打点</button>
+                        <button onclick="showProcess(3)" id="proc-3"
+                        class="process-btn w-full text-left px-4 py-2.5 rounded-lg text-sm text-stone-500 hover:bg-stone-100 transition">农民画构图</button>
+                        <button onclick="showProcess(4)" id="proc-4"
+                        class="process-btn w-full text-left px-4 py-2.5 rounded-lg text-sm text-stone-500 hover:bg-stone-100 transition">旗袍镶边</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="md:col-span-3">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="rounded-2xl overflow-hidden shadow-md img-wrapper">
+                        <img id="process-image"
+                        src="顾绣.png"
+                        alt="顾绣劈丝"
+                        class="section-img aspect-[4/3]"
+                        onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22450%22%3E%3Crect fill=%22%23fdf2e9%22 width=%22600%22 height=%22450%22/%3E%3Ctext fill=%22%23b5453a%22 x=%22300%22 y=%22225%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22 font-size=%2220%22 font-family=%22sans-serif%22%3E图片未找到%3C/text%3E%3C/svg%3E';">
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-stone-800 mb-4" id="process-title">顾绣劈丝</h3>
+                        <p class="text-stone-600 text-sm leading-relaxed mb-5" id="process-desc"></p>
+                        <div class="grid grid-cols-2 gap-3" id="process-steps"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</main>
+
+<footer class="bg-stone-800 text-white py-10 mt-12">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+        <p class="text-stone-400 text-sm">© 2025 知韵 · 申城非遗志 —— 海派非遗文化数字化转型研究</p>
+        <p class="text-stone-500 text-xs mt-1">非遗体验女性创业大赛 · 知韵星火团队</p>
+    </div>
+</footer>
+
+<script>
+    // ========== 图片路径配置（根据您的文档命名） ==========
+    const eraData = {
+        'folk-lit': {
+            title: '民间文学',
+            desc: '民间文学是各民族在长期历史发展中创造并传承的口头文学作品，包括神话、传说、故事、歌谣、谚语等。上海地区以吴歌、崇明山歌、沪谚为代表。',
+            tags: ['神话传说', '民间故事', '史诗歌谣', '谚语谜语'],
+            items: ['《格萨尔》史诗', '梁祝传说', '孟姜女传说', '白蛇传传说'],
+            image: '沪谚.png'
+        },
+        'trad-music': {
+            title: '传统音乐',
+            desc: '江南丝竹、上海港码头号子、瀛洲古调派琵琶，展现海派音乐的多元交融。江南丝竹风格“小、细、轻、雅”，码头号子阳刚粗犷。',
+            tags: ['江南丝竹', '码头号子', '琵琶艺术', '民族器乐'],
+            items: ['《中花六板》', '《码头工人来四方》', '《飞花点翠》', '《欢乐歌》'],
+            image: '江南丝竹.png'
+        },
+        'trad-dance': {
+            title: '传统舞蹈',
+            desc: '奉贤滚灯、打莲湘等民间舞蹈，融合体育与杂技，展现江南水乡的生命力。滚灯素有“百灯之首、灯中之王”美誉。',
+            tags: ['滚灯', '打莲湘', '龙舞', '秧歌'],
+            items: ['缠腰', '白鹤生蛋', '鲤鱼卷水草', '鹁鸪冲天'],
+            image: '奉贤滚灯.png'
+        },
+        'sports': {
+            title: '体育游艺杂技',
+            desc: '海派魔术、松江舞草龙，兼具技巧与观赏性，是上海非遗的活力所在。海派魔术融合中西特色，精巧细腻。',
+            tags: ['海派魔术', '舞草龙', '杂技', '戏法'],
+            items: ['仙人摘豆', '大变活人', '盘龙绕柱', '金龙出海'],
+            image: '海派魔术.png'
+        },
+        'trad-art': {
+            title: '传统美术',
+            desc: '顾绣、上海绒绣、金山农民画，以针代笔，以画寄情。顾绣被誉为“画绣合一、江南绣品之冠”，金山农民画色彩浓烈。',
+            tags: ['顾绣', '绒绣', '农民画', '刺绣'],
+            items: ['韩希孟花鸟册', '万里长城', '鱼塘', '闹元宵'],
+            image: '顾绣.png'
+        },
+        'trad-craft': {
+            title: '传统技艺',
+            desc: '鲁庵印泥、海派旗袍制作，一印一裁皆是匠心。海派旗袍融合镶、嵌、滚、盘、绣等手工技艺。',
+            tags: ['印泥制作', '旗袍技艺', '镶嵌滚盘', '手工盘扣'],
+            items: ['朱砂印泥', '海派旗袍', '潜泉印泥', '胸省腰省'],
+            image: '印泥制作技艺.png'
+        },
+        'trad-med': {
+            title: '传统医药',
+            desc: '易筋经导引法、石氏伤科、海派灸法，养生疗疾的东方智慧。石氏伤科已传至第六代，强调“稳而有劲、柔而灵活”。',
+            tags: ['导引法', '伤科疗法', '灸法', '推拿'],
+            items: ['古本易筋经', '三色敷药', '温针灸', '隔物灸'],
+            image: '中医导引法.png'
+        },
+        'folklore': {
+            title: '民俗',
+            desc: '豫园灯会、龙华庙会、三林老街仪式，岁时节令里的上海味道。豫园灯会每年正月初一至十八举行，是上海人文传统的重要代表。',
+            tags: ['灯会', '庙会', '祭月', '出巡'],
+            items: ['豫园灯会', '龙华庙会', '三林上元出灯', '中秋祭月'],
+            image: '豫园灯会.png'
+        }
+    };
+
+    const districtData = {
+        '青浦区': {
+            desc: '吴歌（青浦田山歌）为国家级非遗，江南丝竹在这里广泛流传。青浦田山歌高亢嘹亮、多声部交织，是江南稻作文化的典型产物。',
+            items: ['吴歌（青浦田山歌）- 国家级', '江南丝竹 - 国家级'],
+            image: '江南丝竹.png'
+        },
+        '崇明区': {
+            desc: '崇明山歌与瀛洲古调派琵琶是崇明岛的文化双璧。崇明山歌现存整理曲目超3000首，瀛洲琵琶演奏风格古朴典雅。',
+            items: ['崇明山歌 - 国家级', '瀛洲古调派琵琶 - 国家级'],
+            image: '瀛洲古调派琵琶.png'
+        },
+        '金山区': {
+            desc: '沪谚、金山农民画、打莲湘，乡土艺术灿烂。金山农民画色彩浓烈、造型夸张，被誉为“东方毕加索”式民间艺术。',
+            items: ['沪谚（陈行谚语）- 国家级', '金山农民画 - 国家级', '打莲湘 - 市级'],
+            image: '金山农民画.png'
+        },
+        '松江区': {
+            desc: '顾绣发源地，松江舞草龙祈求风调雨顺。顾绣起源于明代露香园，2006年列入首批国家级非遗。',
+            items: ['顾绣 - 国家级', '松江舞草龙 - 国家级'],
+            image: '松江舞草龙.png'
+        },
+        '浦东新区': {
+            desc: '浦东新区拥有上海绒绣、上海港码头号子等非遗项目，是海派文化的重要承载区。',
+            items: ['上海绒绣 - 国家级', '上海港码头号子 - 国家级'],
+            image: '上海港码头号子.png'
+        },
+        '黄浦区': {
+            desc: '黄浦区是海派魔术和豫园灯会的核心区域，豫园灯会是上海人文传统的重要代表。',
+            items: ['海派魔术 - 国家级', '豫园灯会 - 国家级', '鲁庵印泥 - 国家级'],
+            image: '海派魔术.png'
+        }
+    };
+
+    const processData = {
+        1: {
+            title: '顾绣劈丝',
+            desc: '将丝线劈至极细，常用劈丝、施针、接针等技法，以针代笔，画绣合一。顾绣起源于明代上海露香园，被誉为“江南绣品之冠”。',
+            steps: ['劈丝', '施针', '接针', '滚针'],
+            image: '顾绣.png'
+        },
+        2: {
+            title: '绒绣打点',
+            desc: '在特制麻布上以彩色羊毛绒线逐点绣制，层次细腻，立体感强。上海绒绣2011年入选国家级非遗，可绣制巨幅风景。',
+            steps: ['打点', '嵌线', '接色', '拼色'],
+            image: '上海绒绣.png'
+        },
+        3: {
+            title: '农民画构图',
+            desc: '色彩浓烈饱满，造型夸张，充满乡土气息与浪漫想象。金山农民画源于灶壁画、剪纸、刺绣等民间艺术。',
+            steps: ['构图', '用色', '勾线', '填色'],
+            image: '金山农民画.png'
+        },
+        4: {
+            title: '旗袍镶边',
+            desc: '镶、嵌、滚、盘、绣等手工技艺，塑造海派旗袍的精致线条。上海在1920年代率先改制旗袍，开启立体造型时代。',
+            steps: ['镶边', '嵌条', '滚边', '盘扣'],
+            image: '海派旗袍制作技艺.png'
+        }
+    };
+
+    function switchEra(eraKey) {
+        document.querySelectorAll('.era-btn').forEach(btn => {
+            btn.classList.remove('museum-tab-active');
+            btn.classList.add('text-stone-400');
+        });
+        const targetBtn = document.getElementById('era-' + eraKey);
+        if (targetBtn) {
+            targetBtn.classList.add('museum-tab-active');
+            targetBtn.classList.remove('text-stone-400');
+        }
+        const data = eraData[eraKey];
+        if (!data) return;
+        document.getElementById('era-title').innerText = data.title;
+        document.getElementById('era-desc').innerText = data.desc;
+        document.getElementById('era-tags').innerHTML = data.tags.map(t =>
+            `<span class="bg-stone-100 px-3 py-1 rounded-full text-xs text-stone-600">${t}</span>`
+        ).join('');
+        document.getElementById('era-items').innerHTML = data.items.map(i => `<li>• ${i}</li>`).join('');
+        document.getElementById('era-image').src = data.image;
+        document.getElementById('era-image').alt = data.title;
+    }
+
+    function loadDistrict(name) {
+        const data = districtData[name];
+        if (!data) return;
+        document.getElementById('district-title').innerText = name;
+        document.getElementById('district-desc').innerText = data.desc;
+        document.getElementById('district-list').innerHTML = data.items.map(i => `<li>• ${i}</li>`).join('');
+        document.getElementById('district-image').src = data.image;
+        document.getElementById('district-image').alt = '上海非遗地图·' + name;
+        document.querySelectorAll('.district-card').forEach(card => card.classList.remove('district-card-active'));
+        const activeCard = document.getElementById('dist-' + name);
+        if (activeCard) activeCard.classList.add('district-card-active');
+    }
+
+    function showProcess(id) {
+        const data = processData[id];
+        if (!data) return;
+        document.getElementById('process-title').innerText = data.title;
+        document.getElementById('process-desc').innerText = data.desc;
+        document.getElementById('process-image').src = data.image;
+        document.getElementById('process-image').alt = data.title;
+        const stepsHtml = data.steps.map((s, i) => `
+            <div class="bg-stone-50 p-3 rounded-xl text-center">
+                <div class="text-xl font-bold text-[#b5453a]">${i + 1}</div>
+                <div class="text-xs text-stone-500 mt-1">${s}</div>
+            </div>
+        `).join('');
+        document.getElementById('process-steps').innerHTML = stepsHtml;
+        document.querySelectorAll('.process-btn').forEach(btn => {
+            btn.classList.remove('process-btn-active');
+            btn.classList.add('text-stone-500');
+        });
+        const activeBtn = document.getElementById('proc-' + id);
+        if (activeBtn) {
+            activeBtn.classList.add('process-btn-active');
+            activeBtn.classList.remove('text-stone-500');
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        switchEra('folk-lit');
+        loadDistrict('青浦区');
+        showProcess(1);
+    });
+</script>
+</body>
+</html>
